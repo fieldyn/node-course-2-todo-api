@@ -9,7 +9,9 @@ const {
 const {
     User
 } = require('./models/user');
-
+const {
+    ObjectId
+} = require('mongodb');
 
 const app = express();
 
@@ -31,6 +33,22 @@ app.get('/todos', (req, res) => {
         res.send({
             todos: result
         });
+    }).catch((err) => {
+        res.status(400).send(err);
+    });
+});
+
+app.get('/todos/:id', (req, res) => {
+    let id = req.params.id;
+    if (!ObjectId.isValid(id)) {
+        return res.status(404).send();
+    }
+
+    Todo.findById(id).then((result) => {
+        if (!result) {
+            return res.status(404).send();
+        }
+        res.send(result);
     }).catch((err) => {
         res.status(400).send(err);
     });
