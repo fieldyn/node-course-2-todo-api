@@ -1,9 +1,7 @@
 const expect = require('expect');
 const request = require('supertest');
 const ObjectID = require('mongodb').ObjectID;
-const {
-    app
-} = require('../server');
+const { app } = require('../server');
 
 const {
     Todo

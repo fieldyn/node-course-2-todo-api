@@ -1,8 +1,5 @@
 // const MongoClient = require('mongodb').MongoClient;
-const {
-    MongoClient,
-    ObjectID
-} = require('mongodb');
+const { MongoClient, ObjectID } = require('mongodb');
 
 let objectId = new ObjectID();
 
@@ -16,19 +13,19 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, db) => {
     db.collection('User').findOneAndUpdate({
         _id: new ObjectID("5b3c2186a6ff9e15b905fa73")
     }, {
-        $set: {
-            name: 'FieldX'
-        },
-        $inc: {
-            age: -1,
-        }
-    }, {
-        returnOriginal: false
-    }).then((result) => {
-        console.log(result);
-    }).catch((err) => {
-        console.log('Unable to update User', err);
-    });;
+            $set: {
+                name: 'FieldX'
+            },
+            $inc: {
+                age: -1,
+            }
+        }, {
+            returnOriginal: false
+        }).then((result) => {
+            console.log(result);
+        }).catch((err) => {
+            console.log('Unable to update User', err);
+        });;
 
     db.close();
 });
