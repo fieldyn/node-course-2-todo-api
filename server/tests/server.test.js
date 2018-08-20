@@ -3,9 +3,8 @@ const request = require('supertest');
 const ObjectID = require('mongodb').ObjectID;
 const { app } = require('../server');
 
-const {
-    Todo
-} = require('../models/todo');
+const { Todo } = require('../models/todo');
+const { User } = require('../models/user');
 
 const todos = [{
     _id: new ObjectID,
@@ -17,10 +16,27 @@ const todos = [{
     completedAt: 333
 }];
 
+const users = [{
+    _id: new ObjectID,
+    email: 'fieldyn@gmail.com',
+    password: 'asd123!',
+    tokens: [{ access: 'asd', token: 'asd' }]
+}, {
+    _id: new ObjectID,
+    email: 'fieldyn2@gmail.com',
+    password: 'asd123!',
+    tokens: [{ access: 'asd', token: 'asd' }]
+}];
+
 beforeEach((done) => {
-    Todo.remove({}).then(() => {
+    Todo.remove({})
+      .then(() => {
         return Todo.insertMany(todos);
-    }).then(() => done());
+      })
+      .then(() => User.remove({}))
+      .then(() => done());
+
+    
 });
 
 describe('POST /Todos', () => {
@@ -175,4 +191,33 @@ describe('PATCH /todos/:id', () =>{
             }).end(done);
     });
 
+});
+
+describe('POST /users', () =>{
+    it('should add the user', (done)=>{
+        let test = {
+            email: 'fieldyn@gmail.com',
+            password: 'asd123!'//,
+            //tokens: [{ access: 'asd', token: 'asd' }]
+        };
+
+        request(app)
+            .post(`/users`)
+            .send(test)
+            .expect(200)
+            .expect((res) =>{
+                expect(res.body.email).toBe(test.email);
+            }).end((err, res)=>{
+                if(err) return done(err);
+
+                User.find({email:res.body.email}).then((result)=>{
+                    expect(result.length).toBeGreaterThanOrEqualTo(1);
+                    expect(result[0].email).toBe(res.body.email);
+                    done();
+                }).catch((err)=>{
+                    return done(err);
+                });
+                
+            });
+    });
 });
